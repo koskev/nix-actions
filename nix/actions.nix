@@ -196,7 +196,7 @@
         };
         jobs.clippy.steps = commonSteps ++ [
           {
-            run = "nix develop ${targetName} --command clippy -- ${clippyArgs}";
+            run = "nix develop ${targetName} --command cargo clippy -- ${clippyArgs}";
           }
         ];
       };
