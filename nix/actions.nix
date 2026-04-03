@@ -236,5 +236,34 @@
         }
         // extraJobs;
       };
+
+    mkCachixSteps =
+      {
+        branches ? [ "main" ],
+        cachix_repo ? "koskev",
+        target ? ".",
+      }:
+      mkSteps {
+        steps = [
+          {
+            uses = actions.cachix;
+            "with" = {
+              name = cachix_repo;
+              authToken = "\${{ secrets.CACHIX_AUTH_TOKEN }}";
+              signingKey = "\${{ secrets.CACHIX_SIGNING_KEY }}";
+              skipPush = true;
+            };
+          }
+          {
+            run = "nix build ${target}";
+          }
+          {
+            name = "Push to cachix";
+            run = "nix path-info ${target} | cachix push ${cachix_repo}";
+          }
+        ];
+        inherit branches;
+      };
+
   };
 }
