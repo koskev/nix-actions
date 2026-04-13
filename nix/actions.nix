@@ -210,6 +210,7 @@
         ],
         extraBuildSteps ? [ ],
         extraJobs ? { },
+        buildCommand ? "nix build ${targetName}",
       }:
       {
         on = {
@@ -228,7 +229,7 @@
               steps.installNix
               {
                 name = "Build";
-                run = "nix build ${targetName}";
+                run = buildCommand;
               }
             ]
             ++ extraBuildSteps;
