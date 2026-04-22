@@ -72,6 +72,24 @@
         uses = actions.setup-go;
         "with".go-version = "1.25";
       };
+      exportVersion = {
+        name = "Generate Version";
+        run = ''
+          GITHUB_TAG_NAME=''${{ github.ref_name }}
+          TAG_NAME=''${GITHUB_TAG_NAME:-v0.0.0}
+          TAG_VERSION=''${TAG_NAME: 1}
+          echo "TAG_VERSION=$TAG_VERSION" >> $GITHUB_ENV
+        '';
+      };
+      downloadChangelog = {
+        name = "Get changelog";
+        uses = actions.download-artifact;
+        "with" = {
+          name = "changelog";
+          path = "changelog";
+        };
+      };
+
     };
     commonSteps = [
       steps.checkout-full
