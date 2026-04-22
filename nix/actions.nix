@@ -210,7 +210,7 @@
         ],
         extraBuildSteps ? [ ],
         extraJobs ? { },
-        buildCommand ? "nix build ${targetName}",
+        buildCommand ? "nix build ${targetName} --accept-flake-config",
       }:
       {
         on = {
