@@ -212,7 +212,9 @@
           push = { };
           pull_request = { };
         };
-        jobs.clippy.steps = commonSteps ++ [
+        jobs.clippy.steps = [
+          steps.checkout
+          steps.installNix
           {
             run = "nix develop ${targetName} --command cargo clippy -- ${clippyArgs}";
           }
