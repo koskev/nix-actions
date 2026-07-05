@@ -89,7 +89,34 @@
           path = "changelog";
         };
       };
+      generateChangelog = {
+        name = "Generate a changelog";
+        uses = actions.git-cliff;
+        "with" = {
+          config = "cliff.toml";
+          args = "--verbose --current";
+        };
+        env = {
+          OUTPUT = "CHANGELOG.md";
+        };
+      };
 
+      uploadChangelog = {
+        name = "Upload changelog";
+        uses = actions.upload-artifact;
+        "with" = {
+          name = "changelog";
+          path = "CHANGELOG.md";
+          retention-days = 1;
+        };
+      };
+    };
+    stepBundles = {
+      changelog = [
+        steps.checkout-full
+        steps.generateChangelog
+        steps.uploadChangelog
+      ];
     };
     commonSteps = [
       steps.checkout-full
@@ -130,6 +157,8 @@
           platforms.linux
           platforms.linux_aarch64
         ],
+        onTags ? [ "*" ],
+        onPush ? null,
       }:
       {
         name = "Publish docker image";
@@ -177,6 +206,12 @@
               ];
             };
           };
+      }
+      // lib.optionalAttrs (onTags != null) {
+        on.push.onTags = onTags;
+      }
+      // lib.optionalAttrs (onPush != null) {
+        on.push.onPush = onPush;
       };
 
     mkConform = _: {
