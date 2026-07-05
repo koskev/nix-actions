@@ -157,12 +157,13 @@
           platforms.linux
           platforms.linux_aarch64
         ],
-        onTags ? [ "*" ],
-        onPush ? null,
+        onConfig ? {
+          push.tags = [ "*" ];
+        },
       }:
       {
         name = "Publish docker image";
-        on.push.tags = [ "*" ];
+        on = onConfig;
         env = {
           IMAGE = "ghcr.io/\${{ github.repository }}";
         };
@@ -206,12 +207,6 @@
               ];
             };
           };
-      }
-      // lib.optionalAttrs (onTags != null) {
-        on.push.onTags = onTags;
-      }
-      // lib.optionalAttrs (onPush != null) {
-        on.push.onPush = onPush;
       };
 
     mkConform = _: {
